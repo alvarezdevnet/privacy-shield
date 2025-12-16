@@ -182,7 +182,7 @@ docker compose up -d
 
 ---
 
-## 💻 Dashboard Access
+## Dashboard Access
 
 Once deployed, you must access the web panel to finish the configuration.
 The web address is **NOT automatic**; it depends on the IP assigned to your server (Raspberry Pi/PC).
@@ -211,8 +211,9 @@ Mandatory steps in the web dashboard:
 * Go to **Settings > DNS**.
 * **Uncheck** all external providers (Google, OpenDNS, etc).
 * In **"Custom 1 (IPv4)"**, type: 👉 **`10.10.10.2#53`**
-* **IMPORTANT:** Uncheck the **"Use DNSSEC"** box (Unbound already handles validation).
-
+* **IMPORTANT:** Ensure the **"Use DNSSEC"** box is **CHECKED**.
+  * *Why?* Unbound performs the validation, but Pi-hole needs this option enabled to pass the "Authenticated Data" (ad) flag to your devices, confirming the security chain is intact.
+---
 ![image.png](assets/image%201.png)
 
 ### 2. Permit Docker Traffic (CRITICAL) ⚠️
