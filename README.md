@@ -78,6 +78,7 @@ We use a static internal network (`10.10.10.0/24`).
 
 ```yaml
 services:
+  # Recursive DNS Resolver
   unbound:
     container_name: unbound
     image: klutchell/unbound:latest
@@ -88,7 +89,14 @@ services:
     networks:
       privacy_net:
         ipv4_address: 10.10.10.2
+    # Log Rotation Policy: Prevent disk saturation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  # DNS Sinkhole and Ad-blocker
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -99,7 +107,7 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "8080:80/tcp" 
+      - "8080:80/tcp"
     cap_add:
       - SYS_TIME
       - SYS_NICE
@@ -109,6 +117,7 @@ services:
       - PIHOLE_DNS_=${PIHOLE_DNS_IP}#53
       - DNSSEC=true
       - DNSMASQ_LISTENING=all
+      - MAXDBDAYS=90 # Database retention limit (3 months)
     volumes:
       - ./etc-pihole:/etc/pihole
       - ./etc-dnsmasq.d:/etc/dnsmasq.d
@@ -117,6 +126,12 @@ services:
     networks:
       privacy_net:
         ipv4_address: 10.10.10.3
+    # Log Rotation Policy: Prevent disk saturation
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   privacy_net:
