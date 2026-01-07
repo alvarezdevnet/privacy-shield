@@ -1,5 +1,6 @@
-config/pihole/
-pihole-FW-*.log
-.DS_Store
-Thumbs.db
 .env
+etc-pihole/
+etc-dnsmasq.d/
+etc-unbound/
+*.db
+*.log

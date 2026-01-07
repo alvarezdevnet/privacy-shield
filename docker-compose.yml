@@ -1,6 +1,5 @@
-version: "3"
-
 services:
+  # Recursive DNS Resolver
   unbound:
     container_name: unbound
     image: klutchell/unbound:latest
@@ -12,6 +11,7 @@ services:
       privacy_net:
         ipv4_address: 10.10.10.2
 
+  # DNS Sinkhole and Ad-blocker
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -22,14 +22,14 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "8080:80/tcp" 
+      - "8080:80/tcp"
     cap_add:
       - SYS_TIME
       - SYS_NICE
     environment:
-      - TZ=Europe/Madrid
-      - WEBPASSWORD=change_me_please # change it in your local environment
-      - PIHOLE_DNS_=10.10.10.2#53
+      - TZ=${TIMEZONE}
+      - WEBPASSWORD=${PIHOLE_WEB_PASSWORD}
+      - PIHOLE_DNS_=${PIHOLE_DNS_IP}#53
       - DNSSEC=true
       - DNSMASQ_LISTENING=all
     volumes:
