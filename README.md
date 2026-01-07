@@ -81,6 +81,8 @@ services:
     image: klutchell/unbound:latest
     restart: unless-stopped
     hostname: unbound
+    volumes:
+      - ./etc-unbound:/opt/unbound/etc/unbound/
     networks:
       privacy_net:
         ipv4_address: 10.10.10.2
@@ -95,23 +97,19 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      # Web Interface mapped to 8080 to avoid conflicts
       - "8080:80/tcp" 
-    # CRITICAL FOR PI-HOLE v6+ & DNSSEC
     cap_add:
       - SYS_TIME
       - SYS_NICE
     environment:
       - TZ=Europe/Madrid
-      # ⚠️ SECURITY NOTICE: Change this password immediately after deployment
-      - WEBPASSWORD=change_me_please
+      - WEBPASSWORD=change_me_please # change it in your local environment
       - PIHOLE_DNS_=10.10.10.2#53
       - DNSSEC=true
       - DNSMASQ_LISTENING=all
     volumes:
       - ./etc-pihole:/etc/pihole
       - ./etc-dnsmasq.d:/etc/dnsmasq.d
-      # TIME SYNC VOLUMES (REQUIRED)
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     networks:
